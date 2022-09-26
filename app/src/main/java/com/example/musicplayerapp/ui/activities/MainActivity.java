@@ -1,13 +1,10 @@
 package com.example.musicplayerapp.ui.activities;
 
-import static com.example.musicplayerapp.utils.RequestResponseUtils.*;
-
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -19,7 +16,6 @@ import android.widget.Toast;
 import com.example.musicplayerapp.R;
 import com.example.musicplayerapp.databinding.ActivityMainBinding;
 import com.example.musicplayerapp.utils.GoogleApiClientsUtils;
-import com.example.musicplayerapp.utils.RequestResponseUtils;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -28,9 +24,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.internal.zaag;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private GoogleSignInClient client;
@@ -44,8 +39,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         Intent intent = result.getData();
                         GoogleSignInResult loginResult = Auth.GoogleSignInApi.getSignInResultFromIntent(intent);
                         if(loginResult.isSuccess()) {
-                            GoogleSignInAccount signInAccount = loginResult.getSignInAccount();
-                            Log.d("Data", "onActivityResult: " + signInAccount.getEmail() + " " + signInAccount.getIdToken());
+                            redirectToDashBoard();
                         }
                     }
 
@@ -101,13 +95,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
             client = GoogleSignIn.getClient(getApplicationContext(), options);
         } else {
-            Toast.makeText(getApplicationContext(), "User Already Logged In", Toast.LENGTH_LONG).show();
+            redirectToDashBoard();
         }
 
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+    private void redirectToDashBoard() {
+        Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
